@@ -254,7 +254,7 @@ void Node::AddExtrapolator(const int trajectory_id,
       node_options_.map_builder_options.use_trajectory_builder_3d()
           ? options.trajectory_builder_options.trajectory_builder_3d_options()
                 .imu_gravity_time_constant()
-          : options.trajectory_builder_options.t rajectory_builder_2d_options()
+          : options.trajectory_builder_options.trajectory_builder_2d_options()
                 .imu_gravity_time_constant();
 
   // map::emplace() 用于通过在容器中插入新元素来来扩展map容器 

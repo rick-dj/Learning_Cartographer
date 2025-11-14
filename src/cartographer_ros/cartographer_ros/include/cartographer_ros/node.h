@@ -53,7 +53,7 @@
 #include <tf2_ros/buffer.h>
 #include <tf2_ros/transform_listener.h>
 
-namespace   {
+namespace  cartographer_ros {
 
 // Wires up ROS topics to SLAM.
 // 将ROS话题传入SLAM

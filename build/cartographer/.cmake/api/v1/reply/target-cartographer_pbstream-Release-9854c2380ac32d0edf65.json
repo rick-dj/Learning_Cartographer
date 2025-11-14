@@ -1,0 +1,388 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "cartographer_pbstream"
+		}
+	],
+	"backtrace" : 2,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_executable",
+			"google_binary",
+			"install",
+			"target_link_libraries",
+			"_common_compile_stuff",
+			"target_include_directories"
+		],
+		"files" : 
+		[
+			"cmake/functions.cmake",
+			"CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 203,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 50,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 54,
+				"parent" : 1
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 52,
+				"parent" : 1
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 32,
+				"parent" : 4
+			},
+			{
+				"command" : 5,
+				"file" : 0,
+				"line" : 31,
+				"parent" : 4
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-std=c++14 -I/usr/local/include -I/usr/include -O3 -DNDEBUG"
+				},
+				{
+					"fragment" : " -pthread -fPIC  -Wall -Wpedantic -Wno-deprecated-declarations -Werror=format-security -Werror=missing-braces -Werror=reorder -Werror=return-type -Werror=switch -Werror=uninitialized -O3 -DNDEBUG"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 5,
+					"define" : "BOOST_ALL_NO_LIB"
+				},
+				{
+					"backtrace" : 5,
+					"define" : "BOOST_IOSTREAMS_DYN_LINK"
+				},
+				{
+					"backtrace" : 5,
+					"define" : "CERES_EXPORT_INTERNAL_SYMBOLS"
+				},
+				{
+					"backtrace" : 5,
+					"define" : "GFLAGS_IS_A_DLL=0"
+				},
+				{
+					"backtrace" : 5,
+					"define" : "GOOGLE_GLOG_DLL_DECL="
+				},
+				{
+					"backtrace" : 5,
+					"define" : "GOOGLE_GLOG_DLL_DECL_FOR_UNITTESTS="
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 6,
+					"path" : "/home/rick/cartographer_ws/src/cartographer/cartographer"
+				},
+				{
+					"backtrace" : 5,
+					"path" : "/home/rick/cartographer_ws/build/cartographer"
+				},
+				{
+					"backtrace" : 5,
+					"path" : "/home/rick/cartographer_ws/src/cartographer"
+				},
+				{
+					"backtrace" : 5,
+					"isSystem" : true,
+					"path" : "/usr/include/eigen3"
+				},
+				{
+					"backtrace" : 5,
+					"isSystem" : true,
+					"path" : "/usr/include/lua5.3"
+				}
+			],
+			"language" : "CXX",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		}
+	],
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 5,
+			"id" : "cartographer::@6890427a1f51a3e7e1df"
+		}
+	],
+	"id" : "cartographer_pbstream::@6890427a1f51a3e7e1df",
+	"install" : 
+	{
+		"destinations" : 
+		[
+			{
+				"backtrace" : 3,
+				"path" : "bin"
+			}
+		],
+		"prefix" : 
+		{
+			"path" : "/home/rick/cartographer_ws/install/cartographer"
+		}
+	},
+	"link" : 
+	{
+		"commandFragments" : 
+		[
+			{
+				"fragment" : "-std=c++14 -I/usr/local/include -I/usr/include -O3 -DNDEBUG",
+				"role" : "flags"
+			},
+			{
+				"fragment" : "",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "libcartographer.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/lib/libceres.so.2.0.0",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/lib/x86_64-linux-gnu/libglog.so.0.4.0",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/lib/x86_64-linux-gnu/libunwind.so",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/lib/x86_64-linux-gnu/liblua5.3.so",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-lm",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/lib/x86_64-linux-gnu/libboost_iostreams.so.1.74.0",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-lglog",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/lib/x86_64-linux-gnu/libgflags.so.2.2.2",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-lpthread",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-lcairo",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/lib/x86_64-linux-gnu/libprotobuf.so",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/local/lib/libabsl_leak_check.so.2111.0.0",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/local/lib/libabsl_cord.so.2111.0.0",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/local/lib/libabsl_cordz_info.so.2111.0.0",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/local/lib/libabsl_cord_internal.so.2111.0.0",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/local/lib/libabsl_cordz_functions.so.2111.0.0",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/local/lib/libabsl_cordz_handle.so.2111.0.0",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/local/lib/libabsl_hash.so.2111.0.0",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/local/lib/libabsl_city.so.2111.0.0",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/local/lib/libabsl_bad_variant_access.so.2111.0.0",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/local/lib/libabsl_low_level_hash.so.2111.0.0",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/local/lib/libabsl_raw_hash_set.so.2111.0.0",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/local/lib/libabsl_bad_optional_access.so.2111.0.0",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/local/lib/libabsl_hashtablez_sampler.so.2111.0.0",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/local/lib/libabsl_exponential_biased.so.2111.0.0",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/local/lib/libabsl_str_format_internal.so.2111.0.0",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/local/lib/libabsl_synchronization.so.2111.0.0",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/local/lib/libabsl_stacktrace.so.2111.0.0",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/local/lib/libabsl_graphcycles_internal.so.2111.0.0",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/local/lib/libabsl_symbolize.so.2111.0.0",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/local/lib/libabsl_malloc_internal.so.2111.0.0",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/local/lib/libabsl_debugging_internal.so.2111.0.0",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/local/lib/libabsl_demangle_internal.so.2111.0.0",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/local/lib/libabsl_time.so.2111.0.0",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/local/lib/libabsl_strings.so.2111.0.0",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/local/lib/libabsl_strings_internal.so.2111.0.0",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/local/lib/libabsl_base.so.2111.0.0",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/local/lib/libabsl_spinlock_wait.so.2111.0.0",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/local/lib/libabsl_throw_delegate.so.2111.0.0",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/local/lib/libabsl_raw_logging_internal.so.2111.0.0",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/local/lib/libabsl_log_severity.so.2111.0.0",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/local/lib/libabsl_int128.so.2111.0.0",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/local/lib/libabsl_civil_time.so.2111.0.0",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "/usr/local/lib/libabsl_time_zone.so.2111.0.0",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-lpthread",
+				"role" : "libraries"
+			}
+		],
+		"language" : "CXX"
+	},
+	"name" : "cartographer_pbstream",
+	"nameOnDisk" : "cartographer_pbstream",
+	"paths" : 
+	{
+		"build" : ".",
+		"source" : "."
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 2,
+			"compileGroupIndex" : 0,
+			"path" : "cartographer/io/pbstream_main.cc",
+			"sourceGroupIndex" : 0
+		}
+	],
+	"type" : "EXECUTABLE"
+}
