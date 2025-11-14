@@ -523,8 +523,15 @@ int Node::AddTrajectory(const TrajectoryOptions& options) {
   return trajectory_id;
 }
 
+/**
+ * @brief 话题订阅与注册函数回调
+ * @param options 配置参数
+ * @param trajectory_id 轨迹ID  
+ * 
+ */
 void Node::LaunchSubscribers(const TrajectoryOptions& options,
                              const int trajectory_id) {
+  // laser_scans的话题订阅与注册回调，多个laser_scans的topic共用同一个回调函数
   for (const std::string& topic :
        ComputeRepeatedTopicNames(kLaserScanTopic, options.num_laser_scans)) {
     subscribers_[trajectory_id].push_back(

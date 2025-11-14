@@ -1,0 +1,7 @@
+[01m[K/home/rick/cartographer_ws/src/cartographer_ros/cartographer_ros/src/node.cpp:[m[K In member function ‘[01m[Kvoid cartographer_ros::Node::AddExtrapolator(int, const cartographer_ros::TrajectoryOptions&)[m[K’:
+[01m[K/home/rick/cartographer_ws/src/cartographer_ros/cartographer_ros/src/node.cpp:257:48:[m[K [01;31m[Kerror: [m[K‘[01m[Kconst class cartographer::mapping::proto::TrajectoryBuilderOptions[m[K’ has no member named ‘[01m[Kt[m[K’
+  257 |           : options.trajectory_builder_options.[01;31m[Kt[m[K rajectory_builder_2d_options()
+      |                                                [01;31m[K^[m[K
+gmake[2]: *** [CMakeFiles/cartographer_ros.dir/build.make:132：CMakeFiles/cartographer_ros.dir/src/node.cpp.o] 错误 1
+gmake[1]: *** [CMakeFiles/Makefile2:151：CMakeFiles/cartographer_ros.dir/all] 错误 2
+gmake: *** [Makefile:146：all] 错误 2
