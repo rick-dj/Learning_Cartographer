@@ -119,10 +119,20 @@ void MapBuilderBridge::LoadState(const std::string& state_filename,
   map_builder_->LoadState(&stream, load_frozen_state);
 }
 
+/**
+ * @brief 向map_builder中添加一条新的轨迹
+ * @param expected_sensor_ids 传感器id
+ * @param trajectory_options 轨迹配置
+ * @retval 轨迹id
+ *
+ * 
+ */
 int MapBuilderBridge::AddTrajectory(
     const std::set<cartographer::mapping::TrajectoryBuilderInterface::SensorId>&
         expected_sensor_ids,
     const TrajectoryOptions& trajectory_options) {
+
+  // 1 开始一条新的轨迹
   const int trajectory_id = map_builder_->AddTrajectoryBuilder(
       expected_sensor_ids, trajectory_options.trajectory_builder_options,
       [this](const int trajectory_id, const ::cartographer::common::Time time,
@@ -137,11 +147,15 @@ int MapBuilderBridge::AddTrajectory(
 
   // Make sure there is no trajectory with 'trajectory_id' yet.
   CHECK_EQ(sensor_bridges_.count(trajectory_id), 0);
+
+  // 2 为这个新的轨迹创建一个传感器桥
   sensor_bridges_[trajectory_id] = absl::make_unique<SensorBridge>(
       trajectory_options.num_subdivisions_per_laser_scan,
       trajectory_options.tracking_frame,
       node_options_.lookup_transform_timeout_sec, tf_buffer_,
       map_builder_->GetTrajectoryBuilder(trajectory_id));
+
+  // 3 将这个轨迹的配置信息存储起来
   auto emplace_result =
       trajectory_options_.emplace(trajectory_id, trajectory_options);
   CHECK(emplace_result.second == true);

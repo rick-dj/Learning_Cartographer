@@ -17,26 +17,26 @@
 #ifndef CARTOGRAPHER_ROS_CARTOGRAPHER_ROS_MAP_BUILDER_BRIDGE_H
 #define CARTOGRAPHER_ROS_CARTOGRAPHER_ROS_MAP_BUILDER_BRIDGE_H
 
-#include <memory>
-#include <set>
-#include <string>
+#include <memory>      // 智能指针相关头文件
+#include <set>         // 集合容器头文件
+#include <string>      // 字符串处理头文件
 #include <unordered_map>
 
-#include "absl/synchronization/mutex.h"
-#include "cartographer/mapping/map_builder_interface.h"
-#include "cartographer/mapping/pose_graph_interface.h"
-#include "cartographer/mapping/proto/trajectory_builder_options.pb.h"
-#include "cartographer/mapping/trajectory_builder_interface.h"
-#include "cartographer_ros/node_options.h"
-#include "cartographer_ros/sensor_bridge.h"
-#include "cartographer_ros/tf_bridge.h"
-#include "cartographer_ros/trajectory_options.h"
-#include "cartographer_ros_msgs/msg/submap_entry.hpp"
-#include "cartographer_ros_msgs/msg/submap_list.hpp"
-#include "cartographer_ros_msgs/srv/submap_query.hpp"
-#include "cartographer_ros_msgs/srv/trajectory_query.hpp"
-#include "geometry_msgs/msg/transform_stamped.hpp"
-#include "nav_msgs/msg/occupancy_grid.hpp"
+#include "absl/synchronization/mutex.h"      // Abseil互斥锁
+#include "cartographer/mapping/map_builder_interface.h"  // 地图构建器接口
+#include "cartographer/mapping/pose_graph_interface.h"   // 位姿图接口
+#include "cartographer/mapping/proto/trajectory_builder_options.pb.h"  // 轨迹构建器选项协议缓冲区
+#include "cartographer/mapping/trajectory_builder_interface.h"  // 轨迹构建器接口
+#include "cartographer_ros/node_options.h"  // 节点选项
+#include "cartographer_ros/sensor_bridge.h"  // 传感器桥接
+#include "cartographer_ros/tf_bridge.h"     // TF变换桥接
+#include "cartographer_ros/trajectory_options.h"  // 轨迹选项
+#include "cartographer_ros_msgs/msg/submap_entry.hpp"  // 子图条目消息
+#include "cartographer_ros_msgs/msg/submap_list.hpp"   // 子图列表消息
+#include "cartographer_ros_msgs/srv/submap_query.hpp"  // 子图查询服务
+#include "cartographer_ros_msgs/srv/trajectory_query.hpp"  // 轨迹查询服务
+#include "geometry_msgs/msg/transform_stamped.hpp"  // 变换时间戳消息
+#include "nav_msgs/msg/occupancy_grid.hpp"  // 占据网格消息
 
 // Abseil unfortunately pulls in winnt.h, which #defines DELETE.
 // Clean up to unbreak visualization_msgs::msg::Marker::DELETE.
@@ -45,6 +45,12 @@
 #endif
 #include "visualization_msgs/msg/marker_array.hpp"
 
+
+
+/**
+ * @brief MapBuilderBridge类负责连接ROS节点和Cartographer的SLAM后端，处理传感器数据的转换和位姿估计的传递。
+ * 
+ */
 namespace cartographer_ros {
 
 class MapBuilderBridge {

@@ -10,7 +10,7 @@
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * See the License for the specific language governing s and
  * limitations under the License.
  */
 
@@ -58,6 +58,16 @@ using TrajectoryState =
 namespace {
 // Subscribes to the 'topic' for 'trajectory_id' using the 'node_handle' and
 // calls 'handler' on the 'node' to handle messages. Returns the subscriber.
+/**
+ * @brief   在node_handle节点上订阅topic话题，并注册回调函数handler处理接收到的消息
+ * @param handler 回调函数指针
+ * @param trajectory_id 轨迹ID
+ * @param topic 话题名称
+ * @param node_handle ROS的node_handle节点指针
+ * @param node Cartographer ROS的Node节点指针
+ * @return ::rclcpp::SubscriptionBase::SharedPtr 返回订阅器指针
+ * 
+ */
 template <typename MessageType>
 ::rclcpp::SubscriptionBase::SharedPtr SubscribeWithHandler(
     void (Node::*handler)(int, const std::string&,
@@ -65,7 +75,9 @@ template <typename MessageType>
     const int trajectory_id, const std::string& topic,
     ::rclcpp::Node::SharedPtr node_handle, Node* const node) {
   return node_handle->create_subscription<MessageType>(
+      // 话题名称 
       topic, rclcpp::SensorDataQoS(),
+      // C++ lambda表达式 注册一个回调函数
       [node, handler, trajectory_id, topic](const typename MessageType::ConstSharedPtr msg) {
             (node->*handler)(trajectory_id, topic, msg);
           });
@@ -89,8 +101,7 @@ std::string TrajectoryStateToString(const TrajectoryState trajectory_state) {
 
 
 /**
- * @brief 
- * 声明ROS的一些topic发布器，服务的发布器，以及时间驱动函数与定时函数
+ * @brief  声明ROS的一些topic发布器，服务的发布器，以及时间驱动函数与定时函数
  * @param node_options 配置文件内容
  * @param map_builder 地图构建器 SLAM算法实现
  * @param tf_buffer TF变换缓存
@@ -391,7 +402,7 @@ void Node::PublishLocalTrajectoryData() {
         ::geometry_msgs::msg::PoseStamped pose_msg;
         pose_msg.header.frame_id = node_options_.map_frame;
         pose_msg.header.stamp = stamped_transform.header.stamp;
-        pose_msg.pose = ToGeometryMsgPose(tracking_to_map);
+        pose_msg.pose = ToGeometryMsgPose(tracking_to_map); 
         tracked_pose_publisher_->publish(pose_msg);
       }
     }
@@ -512,11 +523,14 @@ int Node::AddTrajectory(const TrajectoryOptions& options) {
 
   // 订阅话题与注册回调函数
   LaunchSubscribers(options, trajectory_id);
+
+  // 创建一个定时器 每3秒检查一次话题名称是否匹配
   maybe_warn_about_topic_mismatch_timer_ = node_->create_wall_timer(
     std::chrono::milliseconds(int(kTopicMismatchCheckDelaySec * 1000)),
     [this]() {
       MaybeWarnAboutTopicMismatch();
     });
+  // 将期望的传感器ID的topic名称加入到已订阅的话题集合中并检查是否存在重复
   for (const auto& sensor_id : expected_sensor_ids) {
     subscribed_topics_.insert(sensor_id.id);
   }
@@ -539,6 +553,7 @@ void Node::LaunchSubscribers(const TrajectoryOptions& options,
              &Node::HandleLaserScanMessage, trajectory_id, topic, node_, this),
          topic});
   }
+  // multi_echo_laser_scans的话题订阅与注册回调，多个multi_echo_laser_scans的topic共用同一个回调函数
   for (const std::string& topic : ComputeRepeatedTopicNames(
            kMultiEchoLaserScanTopic, options.num_multi_echo_laser_scans)) {
     subscribers_[trajectory_id].push_back(
@@ -546,6 +561,7 @@ void Node::LaunchSubscribers(const TrajectoryOptions& options,
              &Node::HandleMultiEchoLaserScanMessage, trajectory_id, topic, node_, this),
          topic});
   }
+  // 点云话题订阅与注册回调，HandleMultiEchoLaserScanMessage共用同一个回调函数
   for (const std::string& topic :
        ComputeRepeatedTopicNames(kPointCloud2Topic, options.num_point_clouds)) {
     subscribers_[trajectory_id].push_back(
@@ -556,6 +572,7 @@ void Node::LaunchSubscribers(const TrajectoryOptions& options,
 
   // For 2D SLAM, subscribe to the IMU if we expect it. For 3D SLAM, the IMU is
   // required.
+  //如果是3D SLAM，必须使用IMU；如果是2D SLAM，根据配置文件决定是否使用IMU
   if (node_options_.map_builder_options.use_trajectory_builder_3d() ||
       (node_options_.map_builder_options.use_trajectory_builder_2d() &&
        options.trajectory_builder_options.trajectory_builder_2d_options()
@@ -566,7 +583,7 @@ void Node::LaunchSubscribers(const TrajectoryOptions& options,
                                                 node_, this),
          kImuTopic});
   }
-
+  //里程计话题订阅与注册回调
   if (options.use_odometry) {
     subscribers_[trajectory_id].push_back(
         {SubscribeWithHandler<nav_msgs::msg::Odometry>(&Node::HandleOdometryMessage,
@@ -574,6 +591,7 @@ void Node::LaunchSubscribers(const TrajectoryOptions& options,
                                                   node_, this),
          kOdometryTopic});
   }
+  // GPS话题订阅与注册回调
   if (options.use_nav_sat) {
     subscribers_[trajectory_id].push_back(
         {SubscribeWithHandler<sensor_msgs::msg::NavSatFix>(
@@ -581,6 +599,7 @@ void Node::LaunchSubscribers(const TrajectoryOptions& options,
              node_, this),
          kNavSatFixTopic});
   }
+  //  地标话题订阅与注册回调
   if (options.use_landmarks) {
     subscribers_[trajectory_id].push_back(
         {SubscribeWithHandler<cartographer_ros_msgs::msg::LandmarkList>(
@@ -856,12 +875,17 @@ void Node::FinishAllTrajectories() {
   }
 }
 
+
 bool Node::FinishTrajectory(const int trajectory_id) {
   absl::MutexLock lock(&mutex_);
   return FinishTrajectoryUnderLock(trajectory_id).code ==
          cartographer_ros_msgs::msg::StatusCode::OK;
 }
 
+/**
+ * @brief 当轨迹结束时，执行全局优化
+ * 
+ */
 void Node::RunFinalOptimization() {
   {
     for (const auto& entry : map_builder_bridge_->GetTrajectoryStates()) {
@@ -882,21 +906,41 @@ void Node::RunFinalOptimization() {
   map_builder_bridge_->RunFinalOptimization();
 }
 
+
+
+/**
+ * @brief 处理里程计消息的回调函数
+ * @param trajectory_id 轨迹ID
+ * @param sensor_id 传感器ID
+ * @param msg 里程计消息指针
+ * 
+ */
 void Node::HandleOdometryMessage(const int trajectory_id,
                                  const std::string& sensor_id,
                                  const nav_msgs::msg::Odometry::ConstSharedPtr& msg) {
+  // 互斥锁 用于保护资源防止多个线程同时访问同一个资源导致的数据竞争                               
   absl::MutexLock lock(&mutex_);
+  // 如果里程计采样器没有脉冲，则直接返回
   if (!sensor_samplers_.at(trajectory_id).odometry_sampler.Pulse()) {
     return;
   }
   auto sensor_bridge_ptr = map_builder_bridge_->sensor_bridge(trajectory_id);
   auto odometry_data_ptr = sensor_bridge_ptr->ToOdometryData(msg);
   if (odometry_data_ptr != nullptr) {
+    //位姿估计器添加里程计数据
     extrapolators_.at(trajectory_id).AddOdometryData(*odometry_data_ptr);
   }
+  //传感器桥接器处理里程计数据 
   sensor_bridge_ptr->HandleOdometryMessage(sensor_id, msg);
 }
 
+/**
+ * @brief 处理GPS消息回调函数
+ * @param trajectory_id 轨迹ID
+ * @param sensor_id 传感器ID
+ * @param msg GPS消息指针
+ * 
+ */
 void Node::HandleNavSatFixMessage(const int trajectory_id,
                                   const std::string& sensor_id,
                                   const sensor_msgs::msg::NavSatFix::ConstSharedPtr& msg) {
@@ -904,10 +948,18 @@ void Node::HandleNavSatFixMessage(const int trajectory_id,
   if (!sensor_samplers_.at(trajectory_id).fixed_frame_pose_sampler.Pulse()) {
     return;
   }
+  // 直接通过 map_builder_bridge_  传入GPS数据
   map_builder_bridge_->sensor_bridge(trajectory_id)
       ->HandleNavSatFixMessage(sensor_id, msg);
 }
 
+/**
+ * @brief 处理地标消息的回调函数
+ * @param trajectory_id 轨迹ID
+ * @param sensor_id 传感器ID
+ * @param msg 地标消息指针
+ * 
+ */
 void Node::HandleLandmarkMessage(
     const int trajectory_id, const std::string& sensor_id,
     const cartographer_ros_msgs::msg::LandmarkList::ConstSharedPtr& msg) {
@@ -915,25 +967,43 @@ void Node::HandleLandmarkMessage(
   if (!sensor_samplers_.at(trajectory_id).landmark_sampler.Pulse()) {
     return;
   }
+  // 直接通过 map_builder_bridge_  传入地标数据
   map_builder_bridge_->sensor_bridge(trajectory_id)
       ->HandleLandmarkMessage(sensor_id, msg);
 }
 
+/**
+ * @brief 处理IMU消息的回调函数
+ * @param trajectory_id 轨迹ID
+ * @param sensor_id 传感器ID
+ * @param msg IMU消息指针
+ * 
+ */
 void Node::HandleImuMessage(const int trajectory_id,
                             const std::string& sensor_id,
                             const sensor_msgs::msg::Imu::ConstSharedPtr& msg) {
   absl::MutexLock lock(&mutex_);
+  // 如果IMU采样器没有脉冲，则直接返回
   if (!sensor_samplers_.at(trajectory_id).imu_sampler.Pulse()) {
     return;
   }
   auto sensor_bridge_ptr = map_builder_bridge_->sensor_bridge(trajectory_id);
   auto imu_data_ptr = sensor_bridge_ptr->ToImuData(msg);
   if (imu_data_ptr != nullptr) {
+    // 位姿估计器添加IMU数据
     extrapolators_.at(trajectory_id).AddImuData(*imu_data_ptr);
   }
+
   sensor_bridge_ptr->HandleImuMessage(sensor_id, msg);
 }
 
+/**
+ * @brief 处理TF消息的回调函数
+ * @param trajectory_id 轨迹ID
+ * @param sensor_id 传感器ID
+ * @param msg TF消息指针 * 
+ * 
+ */
 void Node::HandleLaserScanMessage(const int trajectory_id,
                                   const std::string& sensor_id,
                                   const sensor_msgs::msg::LaserScan::ConstSharedPtr& msg) {
@@ -941,10 +1011,18 @@ void Node::HandleLaserScanMessage(const int trajectory_id,
   if (!sensor_samplers_.at(trajectory_id).rangefinder_sampler.Pulse()) {
     return;
   }
+  // 直接通过 map_builder_bridge_  传入激光数据
   map_builder_bridge_->sensor_bridge(trajectory_id)
       ->HandleLaserScanMessage(sensor_id, msg);
 }
 
+/**
+ * @brief 处理多回波激光扫描消息的回调函数
+ * @param trajectory_id 轨迹ID
+ * @param sensor_id 传感器ID
+ * @param msg 多回波激光扫描消息指针
+ * 
+ */
 void Node::HandleMultiEchoLaserScanMessage(
     const int trajectory_id, const std::string& sensor_id,
     const sensor_msgs::msg::MultiEchoLaserScan::ConstSharedPtr& msg) {
@@ -952,10 +1030,18 @@ void Node::HandleMultiEchoLaserScanMessage(
   if (!sensor_samplers_.at(trajectory_id).rangefinder_sampler.Pulse()) {
     return;
   }
+  // 直接通过 map_builder_bridge_  传入多回波激光数据
   map_builder_bridge_->sensor_bridge(trajectory_id)
       ->HandleMultiEchoLaserScanMessage(sensor_id, msg);
 }
 
+/**
+ * @brief 处理点云消息的回调函数
+ * @param trajectory_id 轨迹ID
+ * @param sensor_id 传感器ID
+ * @param msg 点云消息指针
+ * 
+ */
 void Node::HandlePointCloud2Message(
     const int trajectory_id, const std::string& sensor_id,
     const sensor_msgs::msg::PointCloud2::ConstSharedPtr& msg) {
@@ -963,18 +1049,32 @@ void Node::HandlePointCloud2Message(
   if (!sensor_samplers_.at(trajectory_id).rangefinder_sampler.Pulse()) {
     return;
   }
+  // 直接通过 map_builder_bridge_  传入点云数据
   map_builder_bridge_->sensor_bridge(trajectory_id)
       ->HandlePointCloud2Message(sensor_id, msg);
 }
 
+/**
+ * @brief 传感器状态回调函数
+ * @param filename 状态文件名
+ * @param include_unfinished_submaps 是否包含未完成的子图
+ * 
+ */
 void Node::SerializeState(const std::string& filename,
                           const bool include_unfinished_submaps) {
   absl::MutexLock lock(&mutex_);
   CHECK(
       map_builder_bridge_->SerializeState(filename, include_unfinished_submaps))
-      << "Could not write state.";
+      << "Could not write state.";   
 }
 
+
+/**
+ * @brief 加载状态
+ * @param state_filename 状态文件名
+ * @param load_frozen_state 是否加载冻结状态
+ * 
+ */
 void Node::LoadState(const std::string& state_filename,
                      const bool load_frozen_state) {
   absl::MutexLock lock(&mutex_);
